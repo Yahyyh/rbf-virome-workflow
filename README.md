@@ -27,8 +27,8 @@ ecological selection.”** The analyses are organized into separate DNA virome, 
 │   ├── 02_rna_virome/
 │   ├── 03_metagenome/
 │   └── 04_virus_host/
-├── scripts/r/                # Shared downstream statistical functions
-├── envs/                     # Reproducible environments
+├── scripts/r/
+├── envs/
 ├── metadata/                 # Example sample sheet
 ├── docs/
 │   ├── workflow.md
@@ -52,9 +52,9 @@ on statistical grounds. TPM is relative library abundance, not absolute concentr
 
 ## Reproducibility boundary
 
-- `metadata/samples.example.tsv` is a synthetic schema example; its year-2000 dates and file paths are not study observations.
-- `metadata/samples.ncbi-submission.tsv` preserves the 108 one-to-one sample/library aliases, assay classes, collection months, 
-  and paired-end filenames found in the BioSample and SRA submission workbooks.
+- `metadata/samples.example.tsv` is a synthetic schema example; its year-2000 dates and file paths do not represent actual study observations.
+- `metadata/samples.ncbi-submission.tsv` contains 108 records linking sample aliases one-to-one with SRA library aliases, together with assay classes,
+  collection months, and paired-end FASTQ filenames, as recorded in the BioSample and SRA submission workbooks.
 
 ## Data availability
 
