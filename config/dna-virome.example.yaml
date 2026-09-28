@@ -1,0 +1,57 @@
+# DNA-virome
+reads:
+  fastp:
+    qualified_quality_phred: 20
+    length_required: 20
+    trim_poly_g: true
+    trim_poly_x: true
+
+assembly:
+  assembler: metaspades
+  min_contig_length: 3000
+  kmers_manuscript: [21, 33, 55, 77, 95, 107, 121]
+
+
+virus_detection:
+  virsorter2:
+    min_length: 3000
+    min_score: 0.5
+    groups: [dsDNAphage, NCLDV, lavidaviridae]
+  deepvirfinder:
+    min_length: 3000
+    min_score: 0.9
+    max_pvalue: 0.05
+  quality_assessment: CheckV
+
+votu_clustering:
+  implementation: blastn_plus_checkv_utilities
+  pairwise_alignment: blastn_all_vs_all
+  ani_calculator:
+    tool: anicalc.py
+    source: CheckV
+  clusterer:
+    tool: aniclust.py
+    source: CheckV
+  min_ani_percent: 95
+  min_target_coverage_percent: 85
+  min_query_coverage_percent: 0
+  representative_extraction: seqkit_first_column_ids
+
+abundance:
+  coverm:
+    method: count
+    min_read_percent_identity: 95
+    min_read_aligned_percent: 90
+    min_covered_fraction: 0
+    contig_end_exclusion: 0
+  normalization: tpm
+
+annotation:
+  taxonomy:
+   tool: geNomad
+   workflow: end-to-end
+   input: DNA_vOTU_representatives
+   output: virus_summary.tsv
+   reference_taxonomy: ICTV
+  lifestyle_predictor: DeePhage
+  amg_workflow: DRAM-v

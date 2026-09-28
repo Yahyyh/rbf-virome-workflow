@@ -1,0 +1,37 @@
+# Local source material and private working files
+local-only/
+private/
+*.docx
+*.pdf
+
+# Raw and intermediate sequencing data
+data/
+results/
+logs/
+.snakemake/
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.fasta
+*.fasta.gz
+*.fa
+*.fa.gz
+*.bam
+*.bai
+*.sam
+
+# R and editor state
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+.DS_Store
+Thumbs.db
+
+# Conda and temporary files
+.conda/
+env/
+tmp/
+*.tmp
+*.log

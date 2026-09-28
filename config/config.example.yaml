@@ -1,0 +1,105 @@
+
+project:
+  name: rbf_virome
+  sample_sheet: metadata/samples.tsv
+  results_dir: results
+  threads: 16
+
+reads:
+  fastp:
+    qualified_quality_phred: 20
+    length_required: 20
+    trim_poly_g: true
+    trim_poly_x: true
+  sortmerna:
+    use_defaults: true
+
+assembly:
+  dna:
+    assembler: metaspades
+    min_contig_length: 3000
+    kmers: [21, 33, 55, 77, 95, 107, 121]
+  rna:
+    assembler: metaspades
+    min_contig_length: 1000
+    kmers: [21, 33, 55, 77, 95, 107, 121]
+
+dna_virus_detection:
+  virsorter2:
+    min_length: 3000
+    min_score: 0.5
+    groups: [dsDNAphage, NCLDV, lavidaviridae]
+  deepvirfinder:
+    min_length: 3000
+    min_score: 0.9
+    max_pvalue: 0.05
+  checkv:
+    version: "1.5"
+
+votu_clustering:
+  implementation: blastn_plus_checkv_utilities
+  pairwise_alignment: blastn_all_vs_all
+  ani_calculator:
+    tool: anicalc.py
+    source: CheckV
+  clusterer:
+    tool: aniclust.py
+    source: CheckV
+  min_ani_percent: 95
+  min_target_coverage_percent: 85
+  min_query_coverage_percent: 0
+  representative_extraction: seqkit_first_column_ids
+
+abundance:
+  coverm:
+    method: count
+    min_read_percent_identity: 95
+    min_read_aligned_percent: 90
+    min_covered_fraction: 0
+    contig_end_exclusion: 0
+  normalization: tpm
+
+virus_host:
+  host_contig_clustering:
+    tool: CD-HIT-EST
+    min_identity_percent: 95
+    min_shorter_sequence_coverage_percent: 90
+    word_size: 10
+    preserve_cluster_membership: true
+  crispr:
+    tool: CRISPRone
+    driver: crisprone-local.py
+    cleanup: false
+    spacer_fasta: spacer/all-spacer.fa
+    alignment:
+      tool: blastn
+      task: blastn-short
+    original_hit_filter:
+      min_percent_identity: 97
+      max_mismatches: 1
+      min_bitscore: 50
+      gap_filter_applied: false
+    host_contig_recovery:
+      require_explicit_spacer_to_contig_map: true
+      validate_against_cluster_representatives: true
+  host_taxonomy:
+    tool: CAT_pack
+    recorded_database_directory: 20240422_CAT_nr
+  downstream_characterization:
+    host_abundance: CoverM_count_to_TPM
+    host_gene_prediction: Prodigal_meta
+    host_functional_annotation: eggNOG_mapper_diamond
+    community_comparison: Procrustes_PROTEST
+  shared_genomic_content:
+    enabled: false
+    status: excluded_until_method_reconstruction
+
+functional_annotation:
+  dramv:
+    virsorter_groups: [dsDNAphage, NCLDV, lavidaviridae]
+    min_score: 0
+    min_length: 0
+    provirus_off: true
+  lifestyle_predictor: DeePhage
+  rna_taxonomy_predictor: EsViritu
+

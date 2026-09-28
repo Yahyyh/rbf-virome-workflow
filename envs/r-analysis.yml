@@ -1,0 +1,13 @@
+name: rbf-r-analysis
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base=4.3
+  - r-data.table
+  - r-vegan
+  - r-permute
+  - r-ggplot2
+  - r-patchwork
+  - r-svglite
+  - r-lintr

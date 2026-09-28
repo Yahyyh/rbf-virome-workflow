@@ -1,0 +1,28 @@
+#metagenome 
+reads:
+  fastp:
+    qualified_quality_phred: 30
+    length_required: 35
+  contaminant_removal:
+    aligner: BWA
+    reference: UniVec
+
+assembly:
+  assembler: metaspades
+  kmers: [21, 33, 55, 77, 95, 107, 121]
+  post_assembly_min_contig_length: 300
+  assembly_metrics: QUAST
+
+genes:
+  predictor: Prodigal
+  mode: meta
+  nucleotide_clustering:
+    tool: CD-HIT
+    identity_percent: 95
+
+annotation:
+  functional_annotation: eggNOG-mapper
+  contig_taxonomy: CAT
+
+abundance:
+  tool: CoverM

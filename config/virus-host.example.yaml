@@ -1,0 +1,77 @@
+inputs:
+  viruses: results/dna_virome/votu_representatives.fna
+  prokaryotic_contig_directory: results/metagenome/contigs
+  contig_to_sample_map: results/metagenome/contig_to_sample.tsv
+
+host_contigs:
+  minimum_length_bp: 300
+  pre_crispr_clustering:
+    enabled: true
+    tool: CD-HIT-EST
+    identity_percent: 95
+    minimum_shorter_sequence_coverage_percent: 90
+    word_size: 10
+  preserve_cluster_membership: true
+
+crispr:
+  detector:
+    tool: CRISPRone
+    driver: crisprone-local.py
+    cleanup: false
+    retained_spacer_fasta: results/virus_host/crisprone/crisprone/spacer/all-spacer.fa
+  blast_database:
+    tool: makeblastdb
+    dbtype: nucl
+  spacer_to_votu_alignment:
+    tool: blastn
+    task: blastn-short
+    threads: 64
+    output_fields:
+      - qseqid
+      - sseqid
+      - pident
+      - length
+      - mismatch
+      - gapopen
+      - qstart
+      - qend
+      - sstart
+      - send
+      - evalue
+      - bitscore
+      - qcovs
+      - qcovhsp
+  original_hit_filter:
+    min_percent_identity: 97
+    max_mismatches: 1
+    min_bitscore: 50
+    gap_filter_applied: false
+
+host_contig_recovery:
+  spacer_to_contig_map: results/virus_host/crisprone/spacer_to_host_contig.tsv
+  validate_against_cluster_representatives: true
+  extractor: seqkit
+
+host_taxonomy:
+  tool: CAT_pack
+  recorded_database_directory: 20240422_CAT_nr
+
+downstream_host_characterization:
+  abundance:
+    tool: CoverM
+    method: count
+    min_read_percent_identity: 95
+    min_read_aligned_percent: 90
+    normalization: TPM
+  gene_prediction:
+    tool: Prodigal
+    mode: meta
+  functional_annotation:
+    tool: eggNOG-mapper
+    search_mode: diamond
+    seed_ortholog_evalue: 1.0e-5
+  community_comparison:
+    method: Procrustes_PROTEST
+    script: scripts/r/02_virus_host_procrustes.R
+
+

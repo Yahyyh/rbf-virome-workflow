@@ -1,0 +1,35 @@
+# RNA-virome
+reads:
+  fastp:
+    qualified_quality_phred: 20
+    length_required: 20
+    trim_poly_g: true
+    trim_poly_x: true
+  rrna_removal:
+    tool: SortMeRNA
+
+assembly:
+  assembler: metaspades
+  min_contig_length: 1000
+  kmers_manuscript: [21, 33, 55, 77, 95, 107, 121]
+
+virus_detection:
+  primary_predictor: VirBot
+  quality_assessment: CheckV
+  representative_reclassification: VirBot_sensitive
+
+votu_clustering:
+  implementation: Stampede-ClusterGenomes
+  executable: Cluster_genomes.pl
+  min_identity_percent: 95
+  min_coverage_percent: 85
+
+abundance:
+  coverm:
+    method: count
+    min_read_percent_identity: 95
+    min_read_aligned_percent: 90
+  normalization: tpm
+
+annotation:
+  eukaryotic_virus_classifier: EsViritu
